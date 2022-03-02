@@ -1,100 +1,109 @@
 import java.util.Scanner;
 
+import static java.lang.System.exit;
+
 public class EnigmaMachine {
   //global variables
+  boolean encrypt; // ikke implementeret endnu
+  boolean decrypt; // ikke implementeret endnu
+  final CipherCeasar cc = new CipherCeasar();
   Scanner in = new Scanner(System.in);
-  private final EnigmaMachine enig = new EnigmaMachine();
-  private final CipherCeasar cc = new CipherCeasar();
 
   public static void main(String[] args) {
     new EnigmaMachine().enigmaMachine();
   }
 
   void enigmaMachine() {
-    displayWelcomeMessage();
-    menuEncryptionOrDecryption();
+    menuWelcome();
+    //menuEncryptionOrDecryption();
     menuCipherTypes();
   }
 
-  void displayWelcomeMessage() {
-    System.out.println("Welcome to the Enigma Machine!");
-  }
-
-  void menuEncryptionOrDecryption() {
-    System.out.println("Choose whether to:");
-    System.out.println("1. Encrypt");
-    System.out.println("2. Decrypt");
+  void menuWelcome() {
+    System.out.println("Velkommen til Enigma Maskinen!");
+    System.out.println();
+    System.out.println("1. \tSTART\tProgram");
+    System.out.println("2. \tEXIT\tProgram");
 
     String encryptionOrDecryption = in.nextLine();
     switch (encryptionOrDecryption) {
-      case "1", "Encrypt", "encrypt" -> System.out.println("You have chosen to encrypt.");
-      case "2", "Decrypt", "decrypt" -> System.out.println("You have chosen to decrypt.");
+      case "1", "Start", "start", "START" -> {
+      }
+      case "2", "Exit", "exit", "EXIT" -> exit(0);
       default -> {
-        System.out.println("You haven't chosen one of the two options, try again.");
+        System.out.println("Du har ikke valgt hvorvidt du vil starte eller forlade programmet, prøv igen.");
+        menuWelcome();
+      }
+    }
+  }
+
+  void menuEncryptionOrDecryption() {
+    System.out.println("Vælg hvorvidt din besked skal:");
+    System.out.println("1. Krypteres");
+    System.out.println("2. Dekrypteres");
+
+    String encryptionOrDecryption = in.nextLine();
+    switch (encryptionOrDecryption) {
+      case "1", "Krypteres", "krypteres" -> {
+        System.out.println("Du har valgt at kryptere din besked.");
+        encrypt = true;
+        decrypt = false;
+      }
+      case "2", "Dekrypteres", "dekrypteres" -> {
+        System.out.println("Du har valgt at dekryptere din besked.");
+        encrypt = false;
+        decrypt = true;
+      }
+      default -> {
+        System.out.println("Du har ikke valgt hvorvidt du vil kryptere eller dekryptere, prøv igen.");
         menuEncryptionOrDecryption();
       }
     }
   }
 
   void menuCipherTypes() {
-    System.out.println("Choose a type of cipher:");
-    System.out.println("1. Ceasar");
-    System.out.println("2. Vigenère");
-    //System.out.println("3. Number");
-    //System.out.println("4. Substitution");
+    System.out.println("Vælg hvilken type krypteringsalgoritme (chiffer) du vil bruge:");
+    System.out.println("1. Cæsars");
+    /*
+    System.out.println("2. Vigenères");
+    System.out.println("3. Number");
+    System.out.println("4. Substitution");
+
+     */
 
     String encryptionType = in.nextLine();
     switch (encryptionType) {
-      case "1", "Ceasar", "ceasar" -> {
-        System.out.println("You have chosen Ceasar cipher");
+      case "1", "Cæsars", "cæsars" -> {
+        System.out.println("Du har valgt Cæsaralgoritmen.");
+        cc.ccInfo();
         cc.cipherCeasar();
       }
-      case "2", "Vigenère", "vigenère", "Vigenere", "vigenere" -> {
-        System.out.println("You have choosen Vigenère cipher");
-        cipherVigenere();
-      }
-      //case "3", "Number", "number" -> System.out.println("You have chosen Number cipher");
-      //case "4", "Substitution", "substitution" -> System.out.println("You have choosen Substitution cipher");
+      /*
+      case "2", "Vigenères", "vigenères", "Vigeneres", "vigeneres" -> System.out.println("Du har valgt Vigenères chiffer.");
+      case "3", "Number", "number" -> System.out.println("You have chosen Number cipher");
+      case "4", "Substitution", "substitution" -> System.out.println("You have choosen Substitution cipher");
+
+       */
       default -> {
-        System.out.println("You haven't chosen a type of cipher, try again.");
+        System.out.println("Du har ikke valgt en chiffer, prøv igen.");
         menuCipherTypes();
       }
     }
   }
-/*
-  void cipherCeasar() {
-    String plaintext = new EnigmaMachine().userInputPlaintext();
-    displayCiphertext(encryptionCeasar(plaintext, userInputKey()),plaintext);
-  }
-
- */
-
-  void cipherVigenere() {
-    String plaintext = new EnigmaMachine().userInputPlaintext();
-    displayCiphertext(encryptionVigenere(plaintext, userInputKey()),plaintext);
-  }
 
   String userInputPlaintext() {
-    System.out.print("\nEnter plaintext: ");
+    System.out.print("\nIndtast beskeden der skal krypteres/dekrypteres: ");
     return in.nextLine();
   }
 
   String userInputKey() {
-    System.out.print("\nEnter key: ");
-
+    System.out.print("\nIndtast en nøgle: ");
     return in.nextLine();
   }
 
-  String encryptionCeasar(String plaintext, String key) {
-    return plaintext + key;
-  }
-
-  String encryptionVigenere(String plaintext, String key) {
-    return plaintext + key;
-  }
-
-  void displayCiphertext(String encryption, String plaintext) {
-    System.out.println("Ciphertext: "+encryption);
-    System.out.println("Plaintext: "+plaintext);
+  void displayCiphertext(String plaintext, String ciphertext) {
+    System.out.printf("\nOriginal tekst: %s", plaintext);
+    System.out.printf("\nKrypteret/dekrypteret tekst: %s", ciphertext);
+    enigmaMachine();
   }
 }

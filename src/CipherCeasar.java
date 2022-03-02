@@ -1,52 +1,40 @@
-import java.util.Scanner;
 
 public class CipherCeasar {
   //Global variables
-  //private char[] chrArray; // Char-array
   final int ALPHABET_LENGTH = 29; // length of the danish alphabet
   final int DIFF_CHAR_INT = 64; // difference between ASCII value of char's in Char-array and assigned integer value in Int-array.
-  //private String ciphertext; //encrypted text output
-  //private String plaintext; // text input
-  Scanner in = new Scanner(System.in);
 
-  public static void main(String[] args) {
-    new CipherCeasar().cipherCeasar();
+  void cipherCeasar() {
+    String plaintext = new EnigmaMachine().userInputPlaintext();
+    String key = new EnigmaMachine().userInputKey();
+    String ciphertext = ccEncrypt(ccKeyShift(ccKey(key), ccConvert(plaintext)));
+    new EnigmaMachine().displayCiphertext(plaintext, ciphertext);
   }
 
-  public void cipherCeasar() {
-    //Programmet har ingen velkomstbesked, da dette blot er et modul i et større program.
-    String plaintext = userInputText();
-    String ciphertext = ccEncrypt(ccShiftKey(userInputKey(),ccConvert(plaintext)));
-    System.out.printf("\nOriginal tekst: %s", plaintext);
-    System.out.printf("\nKrypteret/dekrypteret tekst: %s", ciphertext);
+  // Lidt info omkring Cæsaralgoritmen.
+  void ccInfo() {
+    System.out.println();
+    System.out.println("Cæsaralgoritmen er et specialtilfælde af monoalfabetisk substitution, som blev benyttet under Julius Cæsar.\nHvert bogstav erstattes med et bogstav et antal pladser længere nede i alfabetet (shift cipher).\nNøglen er antallet af pladser der flyttes.");
   }
 
-  //Text input
-  public String userInputText() {
-    System.out.print("\nSkriv den tekst der skal encrypteres: ");
-    return in.nextLine();
-  }
-
-  //Shift input
-  public int userInputKey() {
-    System.out.print("\nIndtast i heltal hvor mange bogstaver din besked skal rykkes (+/-): ");
-    String shiftStr = in.nextLine(); // shift string input
-    int shiftInt = 0; // shift value converted from string to integer.
+  //Konvertering af nøgle fra string til integer, samt fejlsikring.
+  int ccKey(String keyStr) {
+    int keyInt = 0; // shift value converted from string to integer.
     try { //Tester om input er en integer.
-      shiftInt = Integer.parseInt(shiftStr);
-      System.out.println("Du har indtastet: " + shiftStr);
-    } catch (NumberFormatException e) {
-      System.out.printf("\n\"%s\" er ikke et heltal, prøv igen.", shiftStr);
-      userInputKey();
+      keyInt = Integer.parseInt(keyStr);
+      System.out.println("Du har indtastet: " + keyStr);
+    } catch (NumberFormatException e) { // Fejlsikring.
+      System.out.printf("\n\"%s\" er ikke et heltal, prøv igen.", keyStr);
+      ccKey(keyStr);
     }
-    if (Math.abs(shiftInt) > ALPHABET_LENGTH) { // Fejlsikring. Et bogstav kan ikke rykkes mere end antallet af bogstaver i alfabetet.
-      userInputKey();
+    if (Math.abs(keyInt) > ALPHABET_LENGTH) { // Fejlsikring. Et bogstav kan ikke rykkes mere end antallet af bogstaver i alfabetet.
+      ccKey(keyStr);
     }
-    return shiftInt;
+    return keyInt;
   }
 
-  //Conversion
-  public int[] ccConvert(String plaintext) {
+  //Konvertering, samt fejlsikring.
+  int[] ccConvert(String plaintext) {
     char[] chrArray = new char[plaintext.length()]; // Char-array the length of text string input.
     int[] intArray = new int[plaintext.length()]; // Int-array the length of text string input.
 
@@ -59,7 +47,7 @@ public class CipherCeasar {
         case 'Ø' -> intArray[i] = 28; // nummer 28 i det danske alfabet
         case 'Å' -> intArray[i] = 29; // nummer 29 i det danske alfabet
       }
-      if (intArray[i] < 0 || intArray[i] > ALPHABET_LENGTH) { //Der tages kun imod bogstaver og mellemrum. Alle andre symboler laves til mellemrum.
+      if (intArray[i] < 0 || intArray[i] > ALPHABET_LENGTH) { // Fejlsikring. Der tages kun imod bogstaver og mellemrum. Alle andre symboler laves til mellemrum.
         intArray[i] = 0;
       }
     }
@@ -67,15 +55,15 @@ public class CipherCeasar {
   }
 
   //Shift
-  public int[] ccShiftKey(int shiftInt, int[] intArray) {
+  int[] ccKeyShift(int keyInt, int[] intArray) {
     for (int i = 0; i < intArray.length; i++) {
-      intArray[i] = intArray[i] + shiftInt; // Tal i Int-arrayed rykkes afhængigt af input (+/-).
+      intArray[i] = intArray[i] + keyInt; // Tal i Int-arrayed rykkes afhængigt af input (+/-).
     }
     return intArray;
   }
 
-  //Encryption
-  public String ccEncrypt(int[] intArray) {
+  //Encryption/Decryption
+  String ccEncrypt(int[] intArray) {
     char[] chrArray = new char[intArray.length];
     // Tal i Int-arrayed bliver lavet om til bogstaver i et Char-array afhængigt af deres nye ASCII værdi.
     for (int i = 0; i < intArray.length; i++) {
