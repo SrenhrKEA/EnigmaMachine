@@ -1,7 +1,10 @@
 import java.util.Scanner;
 
 public class EnigmaMachine {
-  Scanner inText = new Scanner(System.in);
+  //global variables
+  Scanner in = new Scanner(System.in);
+  private final EnigmaMachine enig = new EnigmaMachine();
+  private final CipherCeasar cc = new CipherCeasar();
 
   public static void main(String[] args) {
     new EnigmaMachine().enigmaMachine();
@@ -22,7 +25,7 @@ public class EnigmaMachine {
     System.out.println("1. Encrypt");
     System.out.println("2. Decrypt");
 
-    String encryptionOrDecryption = inText.nextLine();
+    String encryptionOrDecryption = in.nextLine();
     switch (encryptionOrDecryption) {
       case "1", "Encrypt", "encrypt" -> System.out.println("You have chosen to encrypt.");
       case "2", "Decrypt", "decrypt" -> System.out.println("You have chosen to decrypt.");
@@ -40,11 +43,11 @@ public class EnigmaMachine {
     //System.out.println("3. Number");
     //System.out.println("4. Substitution");
 
-    String encryptionType = inText.nextLine();
+    String encryptionType = in.nextLine();
     switch (encryptionType) {
       case "1", "Ceasar", "ceasar" -> {
         System.out.println("You have chosen Ceasar cipher");
-        cipherCeasar();
+        cc.cipherCeasar();
       }
       case "2", "Vigenère", "vigenère", "Vigenere", "vigenere" -> {
         System.out.println("You have choosen Vigenère cipher");
@@ -58,11 +61,13 @@ public class EnigmaMachine {
       }
     }
   }
-
+/*
   void cipherCeasar() {
     String plaintext = new EnigmaMachine().userInputPlaintext();
     displayCiphertext(encryptionCeasar(plaintext, userInputKey()),plaintext);
   }
+
+ */
 
   void cipherVigenere() {
     String plaintext = new EnigmaMachine().userInputPlaintext();
@@ -71,13 +76,13 @@ public class EnigmaMachine {
 
   String userInputPlaintext() {
     System.out.print("\nEnter plaintext: ");
-    return inText.nextLine();
+    return in.nextLine();
   }
 
   String userInputKey() {
     System.out.print("\nEnter key: ");
 
-    return inText.nextLine();
+    return in.nextLine();
   }
 
   String encryptionCeasar(String plaintext, String key) {
